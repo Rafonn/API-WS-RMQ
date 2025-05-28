@@ -9,7 +9,7 @@ builder.Services.AddCors(options =>
     {
         policy
             .WithOrigins(
-                "http://localhost:3000"
+                "http://localhost:3000",
                 "https://interface-proj-2025-49pg.vercel.app"
             )
             .AllowAnyHeader()
