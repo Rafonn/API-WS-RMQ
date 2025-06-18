@@ -2,6 +2,27 @@
   "version": 3,
   "targets": {
     "net8.0": {
+      "Apache.NMS.ActiveMQ.NetCore/1.7.3": {
+        "type": "package",
+        "dependencies": {
+          "Apache.NMS.NetCore": "1.7.3"
+        },
+        "compile": {
+          "lib/netstandard2.0/Apache.NMS.ActiveMQ.NetCore.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/Apache.NMS.ActiveMQ.NetCore.dll": {}
+        }
+      },
+      "Apache.NMS.NetCore/1.7.3": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/Apache.NMS.NetCore.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/Apache.NMS.NetCore.dll": {}
+        }
+      },
       "Azure.Core/1.38.0": {
         "type": "package",
         "dependencies": {
@@ -605,6 +626,23 @@
           "System.Threading.Timer": "4.3.0",
           "System.Xml.ReaderWriter": "4.3.0",
           "System.Xml.XDocument": "4.3.0"
+        }
+      },
+      "RabbitMQ.Client/6.8.1": {
+        "type": "package",
+        "dependencies": {
+          "System.Memory": "4.5.5",
+          "System.Threading.Channels": "7.0.0"
+        },
+        "compile": {
+          "lib/netstandard2.0/RabbitMQ.Client.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/RabbitMQ.Client.dll": {
+            "related": ".xml"
+          }
         }
       },
       "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.2": {
@@ -1288,7 +1326,7 @@
           "lib/netstandard1.6/System.Linq.Expressions.dll": {}
         }
       },
-      "System.Memory/4.5.4": {
+      "System.Memory/4.5.5": {
         "type": "package",
         "compile": {
           "ref/netcoreapp2.1/_._": {}
@@ -2000,6 +2038,22 @@
           "lib/netstandard1.3/System.Threading.dll": {}
         }
       },
+      "System.Threading.Channels/7.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/net7.0/System.Threading.Channels.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net7.0/System.Threading.Channels.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/net6.0/_._": {}
+        }
+      },
       "System.Threading.Tasks/4.3.0": {
         "type": "package",
         "dependencies": {
@@ -2091,6 +2145,30 @@
     }
   },
   "libraries": {
+    "Apache.NMS.ActiveMQ.NetCore/1.7.3": {
+      "sha512": "4K/Wh+DWWZKWFTeA/Uw7vgvqRelaGzZxlZwnYHokDK9UH2bl7gsLevav6blAfdvuXXCmLvAFteVgtZFzoEpfeg==",
+      "type": "package",
+      "path": "apache.nms.activemq.netcore/1.7.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "apache.nms.activemq.netcore.1.7.3.nupkg.sha512",
+        "apache.nms.activemq.netcore.nuspec",
+        "lib/netstandard2.0/Apache.NMS.ActiveMQ.NetCore.dll"
+      ]
+    },
+    "Apache.NMS.NetCore/1.7.3": {
+      "sha512": "Qy4cKZGlZ+GHtifSwlzPH2DWMif3C4OE7ByPIWJ7eLHEeIZnWPalkrzuMlVjy4+wx7mrOTGiAgQAVfNwxUL/Nw==",
+      "type": "package",
+      "path": "apache.nms.netcore/1.7.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "apache.nms.netcore.1.7.3.nupkg.sha512",
+        "apache.nms.netcore.nuspec",
+        "lib/netstandard2.0/Apache.NMS.NetCore.dll"
+      ]
+    },
     "Azure.Core/1.38.0": {
       "sha512": "IuEgCoVA0ef7E4pQtpC3+TkPbzaoQfa77HlfJDmfuaJUCVJmn7fT0izamZiryW5sYUFKizsftIxMkXKbgIcPMQ==",
       "type": "package",
@@ -3099,6 +3177,23 @@
         "dotnet_library_license.txt",
         "netstandard.library.1.6.1.nupkg.sha512",
         "netstandard.library.nuspec"
+      ]
+    },
+    "RabbitMQ.Client/6.8.1": {
+      "sha512": "jNsmGgmCNw2S/NzskeN2ijtGywtH4Sk/G6jWUTD5sY9SrC27Xz6BsLIiB8hdsfjeyWCa4j4GvCIGkpE8wrjU1Q==",
+      "type": "package",
+      "path": "rabbitmq.client/6.8.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "icon.png",
+        "lib/net462/RabbitMQ.Client.dll",
+        "lib/net462/RabbitMQ.Client.xml",
+        "lib/netstandard2.0/RabbitMQ.Client.dll",
+        "lib/netstandard2.0/RabbitMQ.Client.xml",
+        "rabbitmq.client.6.8.1.nupkg.sha512",
+        "rabbitmq.client.nuspec"
       ]
     },
     "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.2": {
@@ -4592,10 +4687,10 @@
         "system.linq.expressions.nuspec"
       ]
     },
-    "System.Memory/4.5.4": {
-      "sha512": "1MbJTHS1lZ4bS4FmsJjnuGJOu88ZzTT2rLvrhW7Ygic+pC0NWA+3hgAen0HRdsocuQXCkUTdFn9yHJJhsijDXw==",
+    "System.Memory/4.5.5": {
+      "sha512": "XIWiDvKPXaTveaB7HVganDlOCRoj03l+jrwNvcge/t8vhGYKvqV+dMv6G4SAX2NoNmN0wZfVPTAlFwZcZvVOUw==",
       "type": "package",
-      "path": "system.memory/4.5.4",
+      "path": "system.memory/4.5.5",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -4609,7 +4704,7 @@
         "lib/netstandard2.0/System.Memory.dll",
         "lib/netstandard2.0/System.Memory.xml",
         "ref/netcoreapp2.1/_._",
-        "system.memory.4.5.4.nupkg.sha512",
+        "system.memory.4.5.5.nupkg.sha512",
         "system.memory.nuspec",
         "useSharedDesignerContext.txt",
         "version.txt"
@@ -6429,6 +6524,35 @@
         "system.threading.nuspec"
       ]
     },
+    "System.Threading.Channels/7.0.0": {
+      "sha512": "qmeeYNROMsONF6ndEZcIQ+VxR4Q/TX/7uIVLJqtwIWL7dDWeh0l1UIqgo4wYyjG//5lUNhwkLDSFl+pAWO6oiA==",
+      "type": "package",
+      "path": "system.threading.channels/7.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "THIRD-PARTY-NOTICES.TXT",
+        "buildTransitive/net461/System.Threading.Channels.targets",
+        "buildTransitive/net462/_._",
+        "buildTransitive/net6.0/_._",
+        "buildTransitive/netcoreapp2.0/System.Threading.Channels.targets",
+        "lib/net462/System.Threading.Channels.dll",
+        "lib/net462/System.Threading.Channels.xml",
+        "lib/net6.0/System.Threading.Channels.dll",
+        "lib/net6.0/System.Threading.Channels.xml",
+        "lib/net7.0/System.Threading.Channels.dll",
+        "lib/net7.0/System.Threading.Channels.xml",
+        "lib/netstandard2.0/System.Threading.Channels.dll",
+        "lib/netstandard2.0/System.Threading.Channels.xml",
+        "lib/netstandard2.1/System.Threading.Channels.dll",
+        "lib/netstandard2.1/System.Threading.Channels.xml",
+        "system.threading.channels.7.0.0.nupkg.sha512",
+        "system.threading.channels.nuspec",
+        "useSharedDesignerContext.txt"
+      ]
+    },
     "System.Threading.Tasks/4.3.0": {
       "sha512": "LbSxKEdOUhVe8BezB/9uOGGppt+nZf6e1VFyw6v3DN6lqitm0OSn2uXMOdtP0M3W4iMcqcivm2J6UgqiwwnXiA==",
       "type": "package",
@@ -6734,10 +6858,12 @@
   },
   "projectFileDependencyGroups": {
     "net8.0": [
+      "Apache.NMS.ActiveMQ.NetCore >= 1.7.3",
       "Dapper >= 2.1.66",
       "DotNetEnv >= 3.1.1",
       "Microsoft.AspNetCore.OpenApi >= 8.0.16",
       "Microsoft.Data.SqlClient >= 6.0.2",
+      "RabbitMQ.Client >= 6.8.1",
       "Swashbuckle.AspNetCore >= 8.1.2"
     ]
   },
@@ -6759,12 +6885,14 @@
       ],
       "configFilePaths": [
         "C:\\Users\\Rafael\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config"
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -6789,6 +6917,10 @@
       "net8.0": {
         "targetAlias": "net8.0",
         "dependencies": {
+          "Apache.NMS.ActiveMQ.NetCore": {
+            "target": "Package",
+            "version": "[1.7.3, )"
+          },
           "Dapper": {
             "target": "Package",
             "version": "[2.1.66, )"
@@ -6804,6 +6936,10 @@
           "Microsoft.Data.SqlClient": {
             "target": "Package",
             "version": "[6.0.2, )"
+          },
+          "RabbitMQ.Client": {
+            "target": "Package",
+            "version": "[6.8.1, )"
           },
           "Swashbuckle.AspNetCore": {
             "target": "Package",
@@ -6829,7 +6965,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.301/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

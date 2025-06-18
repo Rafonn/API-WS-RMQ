@@ -1,14 +1,22 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using System;
+using System.Threading.Tasks;
+using RabbitMQ.Client;
+using System.Text.Json;
 
 [ApiController]
 [Route("logs")]
 public class LogsController : ControllerBase
 {
     private readonly SqlService _db;
+    private readonly RabbitMqService _rabbitMqService;
 
-    public LogsController(SqlService db) => _db = db;
+    public LogsController(SqlService db, RabbitMqService rabbitMqService)
+    {
+        _db = db;
+        _rabbitMqService = rabbitMqService;
+    }
 
     // POST /logs/user
     [HttpPost("user")]
@@ -17,20 +25,78 @@ public class LogsController : ControllerBase
         if (string.IsNullOrWhiteSpace(dto.Log) || string.IsNullOrWhiteSpace(dto.UserId))
             return BadRequest("Campos 'log' e 'userId' são obrigatórios.");
 
-        var sql = @"
+        var userMessageTimestamp = DateTime.Now;
+        var userSql = @"
             INSERT INTO user_logs (userMessage, userId, userTimeStamp)
             VALUES (@log, @userId, @timestamp)";
-        await _db.ExecuteAsync(sql, new[]
+        await _db.ExecuteAsync(userSql, new[]
         {
             new SqlParameter("@log", dto.Log),
             new SqlParameter("@userId", dto.UserId),
-            new SqlParameter("@timestamp", DateTimeOffset.UtcNow)
+            new SqlParameter("@timestamp", userMessageTimestamp)
         });
 
-        return Ok(new { message = "Log do usuário inserido com sucesso." });
+        _ = Task.Run(() => WaitForAndPublishBotResponse(dto.UserId, userMessageTimestamp));
+
+        return Ok(new { message = "Log do usuário recebido. Aguardando resposta do bot em segundo plano." });
     }
 
-    // GET /logs/bot/{userId}
+    private async Task WaitForAndPublishBotResponse(string userId, DateTime userTimestamp)
+    {
+        const int maxWaitSeconds = 60;
+        string? botResponse = null;
+
+        for (int i = 0; i < maxWaitSeconds; i++)
+        {
+            await Task.Delay(1000);
+
+            var botSql = @"
+                SELECT TOP 1 botMessage
+                FROM bot_logs
+                WHERE userId = @userId AND botTimeStamp > @userTimestamp
+                ORDER BY botTimeStamp DESC";
+
+            var foundResponse = await _db.QuerySingleAsync(
+                botSql,
+                new[] {
+                    new SqlParameter("@userId", userId),
+                    new SqlParameter("@userTimestamp", userTimestamp)
+                },
+                reader => reader.GetString(0)
+            );
+
+            if (foundResponse != null)
+            {
+                botResponse = foundResponse;
+                break;
+            }
+        }
+
+        if (botResponse != null)
+        {
+            using (var channel = _rabbitMqService.Connection.CreateModel())
+            {
+                const string exchangeName = "bot_log_exchange";
+                channel.ExchangeDeclare(exchangeName, ExchangeType.Direct);
+
+                var payload = new { lastLog = botResponse };
+                var jsonPayload = JsonSerializer.Serialize(payload);
+                var body = System.Text.Encoding.UTF8.GetBytes(jsonPayload);
+
+                channel.BasicPublish(
+                    exchange: exchangeName,
+                    routingKey: userId,
+                    basicProperties: null,
+                    body: body
+                );
+            }
+        }
+        else
+        {
+            Console.WriteLine($"[BACKGROUND TASK] Tempo de espera esgotado. Nenhuma resposta do bot encontrada para '{userId}'.");
+        }
+    }
+
     [HttpGet("bot/{userId}")]
     public async Task<IActionResult> GetLastBotLog(string userId)
     {
@@ -42,43 +108,13 @@ public class LogsController : ControllerBase
 
         var log = await _db.QuerySingleAsync(
             sql,
-            new[]
-            {
-                new SqlParameter("@userId", userId)
-            },
+            new[] { new SqlParameter("@userId", userId) },
             reader => reader.GetString(0)
         );
 
         return log != null
             ? Ok(new { lastLog = log })
             : NotFound(new { message = "Nenhum log do bot encontrado para este usuário." });
-    }
-
-    // GET /logs/user/{userId}
-    [HttpGet("user/{userId}")]
-    public async Task<IActionResult> GetLastUserLog(string userId)
-    {
-        if (string.IsNullOrWhiteSpace(userId))
-            return BadRequest("Parâmetro 'userId' é obrigatório.");
-
-        var sql = @"
-            SELECT TOP 1 userMessage
-            FROM user_logs
-            WHERE userId = @userId
-            ORDER BY userTimeStamp DESC";
-
-        var log = await _db.QuerySingleAsync(
-            sql,
-            new[]
-            {
-                new SqlParameter("@userId", userId)
-            },
-            reader => reader.GetString(0)
-        );
-
-        return log != null
-            ? Ok(new { lastLog = log })
-            : NotFound(new { message = "Nenhum log do usuário encontrado para este usuário." });
     }
 
     // POST /logs/toggle
@@ -108,7 +144,7 @@ public class LogsController : ControllerBase
         return Ok(new { message = "Toggle salvo ou atualizado com sucesso." });
     }
 
-     // GET /logs/toggle/{userId}
+    // GET /logs/toggle/{userId}
     [HttpGet("toggle/{userId}")]
     public async Task<IActionResult> GetToggle(string userId)
     {
@@ -119,7 +155,7 @@ public class LogsController : ControllerBase
             SELECT TOP 1 buttonState
             FROM andritzButton_logs
             WHERE userId = @userId
-            ORDER BY updated_at DESC"; 
+            ORDER BY updated_at DESC";
 
         var registro = await _db.QuerySingleAsync<object>(
             sql,
@@ -180,14 +216,11 @@ public class LogsController : ControllerBase
     }
 }
 
-// DTO para POST /logs/user
 public class LogDto
 {
     public string? Log { get; set; }
     public string? UserId { get; set; }
 }
-
-// DTO para POST /logs/toggle
 public class ToggleDto
 {
     public bool? Toggle { get; set; }

@@ -8,14 +8,35 @@
     ".NETCoreApp,Version=v8.0": {
       "API/1.0.0": {
         "dependencies": {
+          "Apache.NMS.ActiveMQ.NetCore": "1.7.3",
           "Dapper": "2.1.66",
           "DotNetEnv": "3.1.1",
           "Microsoft.AspNetCore.OpenApi": "8.0.16",
           "Microsoft.Data.SqlClient": "6.0.2",
+          "RabbitMQ.Client": "6.8.1",
           "Swashbuckle.AspNetCore": "8.1.2"
         },
         "runtime": {
           "API.dll": {}
+        }
+      },
+      "Apache.NMS.ActiveMQ.NetCore/1.7.3": {
+        "dependencies": {
+          "Apache.NMS.NetCore": "1.7.3"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Apache.NMS.ActiveMQ.NetCore.dll": {
+            "assemblyVersion": "1.7.3.0",
+            "fileVersion": "1.7.3.0"
+          }
+        }
+      },
+      "Apache.NMS.NetCore/1.7.3": {
+        "runtime": {
+          "lib/netstandard2.0/Apache.NMS.NetCore.dll": {
+            "assemblyVersion": "1.7.3.0",
+            "fileVersion": "1.7.3.0"
+          }
         }
       },
       "Azure.Core/1.38.0": {
@@ -41,7 +62,7 @@
           "Azure.Core": "1.38.0",
           "Microsoft.Identity.Client": "4.61.3",
           "Microsoft.Identity.Client.Extensions.Msal": "4.61.3",
-          "System.Memory": "4.5.4",
+          "System.Memory": "4.5.5",
           "System.Security.Cryptography.ProtectedData": "8.0.0",
           "System.Text.Json": "4.7.2",
           "System.Threading.Tasks.Extensions": "4.5.4"
@@ -423,6 +444,18 @@
           "System.Xml.XDocument": "4.3.0"
         }
       },
+      "RabbitMQ.Client/6.8.1": {
+        "dependencies": {
+          "System.Memory": "4.5.5",
+          "System.Threading.Channels": "7.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/RabbitMQ.Client.dll": {
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "6.8.1.0"
+          }
+        }
+      },
       "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.2": {},
       "runtime.fedora.23-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.2": {},
       "runtime.fedora.24-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.2": {},
@@ -759,7 +792,7 @@
           "System.Threading": "4.3.0"
         }
       },
-      "System.Memory/4.5.4": {},
+      "System.Memory/4.5.5": {},
       "System.Memory.Data/1.0.2": {
         "dependencies": {
           "System.Text.Encodings.Web": "4.7.2",
@@ -1124,6 +1157,7 @@
           "System.Threading.Tasks": "4.3.0"
         }
       },
+      "System.Threading.Channels/7.0.0": {},
       "System.Threading.Tasks/4.3.0": {
         "dependencies": {
           "Microsoft.NETCore.Platforms": "1.1.1",
@@ -1181,6 +1215,20 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "Apache.NMS.ActiveMQ.NetCore/1.7.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-4K/Wh+DWWZKWFTeA/Uw7vgvqRelaGzZxlZwnYHokDK9UH2bl7gsLevav6blAfdvuXXCmLvAFteVgtZFzoEpfeg==",
+      "path": "apache.nms.activemq.netcore/1.7.3",
+      "hashPath": "apache.nms.activemq.netcore.1.7.3.nupkg.sha512"
+    },
+    "Apache.NMS.NetCore/1.7.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Qy4cKZGlZ+GHtifSwlzPH2DWMif3C4OE7ByPIWJ7eLHEeIZnWPalkrzuMlVjy4+wx7mrOTGiAgQAVfNwxUL/Nw==",
+      "path": "apache.nms.netcore/1.7.3",
+      "hashPath": "apache.nms.netcore.1.7.3.nupkg.sha512"
     },
     "Azure.Core/1.38.0": {
       "type": "package",
@@ -1405,6 +1453,13 @@
       "sha512": "sha512-WcSp3+vP+yHNgS8EV5J7pZ9IRpeDuARBPN28by8zqff1wJQXm26PVU8L3/fYLBJVU7BtDyqNVWq2KlCVvSSR4A==",
       "path": "netstandard.library/1.6.1",
       "hashPath": "netstandard.library.1.6.1.nupkg.sha512"
+    },
+    "RabbitMQ.Client/6.8.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-jNsmGgmCNw2S/NzskeN2ijtGywtH4Sk/G6jWUTD5sY9SrC27Xz6BsLIiB8hdsfjeyWCa4j4GvCIGkpE8wrjU1Q==",
+      "path": "rabbitmq.client/6.8.1",
+      "hashPath": "rabbitmq.client.6.8.1.nupkg.sha512"
     },
     "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.2": {
       "type": "package",
@@ -1714,12 +1769,12 @@
       "path": "system.linq.expressions/4.3.0",
       "hashPath": "system.linq.expressions.4.3.0.nupkg.sha512"
     },
-    "System.Memory/4.5.4": {
+    "System.Memory/4.5.5": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-1MbJTHS1lZ4bS4FmsJjnuGJOu88ZzTT2rLvrhW7Ygic+pC0NWA+3hgAen0HRdsocuQXCkUTdFn9yHJJhsijDXw==",
-      "path": "system.memory/4.5.4",
-      "hashPath": "system.memory.4.5.4.nupkg.sha512"
+      "sha512": "sha512-XIWiDvKPXaTveaB7HVganDlOCRoj03l+jrwNvcge/t8vhGYKvqV+dMv6G4SAX2NoNmN0wZfVPTAlFwZcZvVOUw==",
+      "path": "system.memory/4.5.5",
+      "hashPath": "system.memory.4.5.5.nupkg.sha512"
     },
     "System.Memory.Data/1.0.2": {
       "type": "package",
@@ -1979,6 +2034,13 @@
       "sha512": "sha512-VkUS0kOBcUf3Wwm0TSbrevDDZ6BlM+b/HRiapRFWjM5O0NS0LviG0glKmFK+hhPDd1XFeSdU1GmlLhb2CoVpIw==",
       "path": "system.threading/4.3.0",
       "hashPath": "system.threading.4.3.0.nupkg.sha512"
+    },
+    "System.Threading.Channels/7.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-qmeeYNROMsONF6ndEZcIQ+VxR4Q/TX/7uIVLJqtwIWL7dDWeh0l1UIqgo4wYyjG//5lUNhwkLDSFl+pAWO6oiA==",
+      "path": "system.threading.channels/7.0.0",
+      "hashPath": "system.threading.channels.7.0.0.nupkg.sha512"
     },
     "System.Threading.Tasks/4.3.0": {
       "type": "package",

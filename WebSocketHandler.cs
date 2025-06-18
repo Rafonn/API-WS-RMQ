@@ -1,100 +1,102 @@
+using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 using System;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Data.SqlClient;
 
 public class WebSocketHandler
 {
-    private readonly WebSocket _socket;
     private readonly HttpContext _context;
-    private readonly SqlService _db;
+    private readonly WebSocket _socket;
+    private readonly RabbitMqService _rabbitMqService;
+    private IModel? _channel;
 
-    public WebSocketHandler(HttpContext context, WebSocket socket, SqlService db)
+    public WebSocketHandler(HttpContext context, WebSocket socket, RabbitMqService rabbitMqService)
     {
         _context = context;
         _socket = socket;
-        _db = db;
+        _rabbitMqService = rabbitMqService;
     }
 
     public async Task HandleAsync()
     {
-        var query = _context.Request.Query;
-        var userId = query["userId"].ToString();
-        var lastTimestamp = query["lastTimestamp"].ToString();
+        var userId = _context.Request.Query["userId"].ToString();
 
-        var lastTs = string.IsNullOrEmpty(lastTimestamp)
-            ? DateTime.UtcNow
-            : DateTime.Parse(lastTimestamp);
-
-        while (_socket.State == WebSocketState.Open)
+        if (string.IsNullOrEmpty(userId))
         {
-            var result = await FetchNewMessageAsync(userId, lastTs);
-            if (result != null)
+            Console.WriteLine("ERRO: userId está vazio. Fechando conexão.");
+            await _socket.CloseAsync(WebSocketCloseStatus.PolicyViolation, "userId é obrigatório", CancellationToken.None);
+            return;
+        }
+
+        try
+        {
+            _channel = _rabbitMqService.Connection.CreateModel();
+
+            const string exchangeName = "bot_log_exchange";
+            _channel.ExchangeDeclare(exchange: exchangeName, type: ExchangeType.Direct);
+
+            var queueName = _channel.QueueDeclare().QueueName;
+
+            _channel.QueueBind(queue: queueName, exchange: exchangeName, routingKey: userId);
+
+            var consumer = new EventingBasicConsumer(_channel);
+
+            consumer.Received += async (model, ea) =>
             {
-                string botMessage = result.Value.botMessage;
-                DateTime botTimeStamp = result.Value.botTimeStamp;
 
-                lastTs = botTimeStamp;
+                var body = ea.Body.ToArray();
+                var jsonMessage = Encoding.UTF8.GetString(body);
 
-                var json =
-                    $"{{\"botMessage\":\"{EscapeForJson(botMessage)}\",\"botTimeStamp\":\"{botTimeStamp:o}\"}}";
+                if (_socket.State == WebSocketState.Open)
+                {
+                    try
+                    {
+                        var buffer = Encoding.UTF8.GetBytes(jsonMessage);
+                        await _socket.SendAsync(new ArraySegment<byte>(buffer), WebSocketMessageType.Text, true, CancellationToken.None);
+                    }
+                    catch (Exception sendEx)
+                    {
+                        Console.WriteLine($"ERRO ao enviar mensagem via WebSocket: {sendEx.Message}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"AVISO: Socket não estava no estado 'Open'. Estado atual: {_socket.State}. Mensagem descartada.");
+                }
+            };
 
-                var buffer = Encoding.UTF8.GetBytes(json);
-                await _socket.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
+            _channel.BasicConsume(queue: queueName, autoAck: true, consumer: consumer);
+
+            await KeepAliveUntilSocketIsClosed();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+
+            if (_socket.State == WebSocketState.Open || _socket.State == WebSocketState.Connecting)
+            {
+                await _socket.CloseAsync(WebSocketCloseStatus.InternalServerError, "Erro interno no servidor", CancellationToken.None);
             }
-
-            await Task.Delay(1000);
+        }
+        finally
+        {
+            _channel?.Close();
+            _channel?.Dispose();
         }
     }
 
-    /// <summary>
-    /// Busca, no banco, a próxima linha em bot_logs para userId cujo botTimeStamp seja maior que lastTs.
-    /// </summary>
-    private async Task<(string botMessage, DateTime botTimeStamp)?> FetchNewMessageAsync(string userId, DateTime lastTs)
+    private async Task KeepAliveUntilSocketIsClosed()
     {
-        var sql = @"
-            SELECT TOP 1 botMessage, botTimeStamp
-            FROM bot_logs
-            WHERE userId = @userId
-              AND botTimeStamp > @lastTs
-            ORDER BY botTimeStamp DESC";
+        var buffer = new byte[1024 * 4];
+        WebSocketReceiveResult result = await _socket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
 
-        var parameters = new[]
+        while (!result.CloseStatus.HasValue)
         {
-            new SqlParameter("@userId", System.Data.SqlDbType.NVarChar, 50) { Value = userId },
-            new SqlParameter("@lastTs", System.Data.SqlDbType.DateTime2) { Value = lastTs }
-        };
-
-        var registro = await _db.QuerySingleAsync<(string botMessage, DateTime botTimeStamp)>(
-            sql,
-            parameters,
-            reader =>
-            {
-                string mensagem = reader.GetString(0);
-                DateTime timestamp = reader.GetDateTime(1);
-                return (mensagem, timestamp);
-            });
-
-        return registro;
-    }
-
-    /// <summary>
-    /// Escapa caracteres especiais para JSON simples (aspas, barras, etc.).
-    /// </summary>
-    private static string EscapeForJson(string? s)
-    {
-        if (string.IsNullOrEmpty(s))
-            return "";
-
-        return s
-            .Replace("\\", "\\\\")
-            .Replace("\"", "\\\"")
-            .Replace("\b", "\\b")
-            .Replace("\f", "\\f")
-            .Replace("\n", "\\n")
-            .Replace("\r", "\\r")
-            .Replace("\t", "\\t");
+            result = await _socket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+        }
     }
 }

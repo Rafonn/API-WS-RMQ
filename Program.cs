@@ -1,4 +1,5 @@
 using Microsoft.OpenApi.Models;
+using System.Net.WebSockets;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +21,7 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddControllers();
 builder.Services.AddSingleton<SqlService>();
-
+builder.Services.AddSingleton<RabbitMqService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -34,8 +35,6 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Minha API V1");
 });
 
-app.UseWebSockets();
-
 app.UseCors("AllowFrontend");
 
 app.Map("/ws", async context =>
@@ -43,8 +42,12 @@ app.Map("/ws", async context =>
     if (context.WebSockets.IsWebSocketRequest)
     {
         var ws = await context.WebSockets.AcceptWebSocketAsync();
-        var sqlService = context.RequestServices.GetRequiredService<SqlService>();
-        var handler = new WebSocketHandler(context, ws, sqlService);
+        
+        // Obtém o serviço do RabbitMQ do container de injeção de dependência
+        var rabbitMqService = context.RequestServices.GetRequiredService<RabbitMqService>();
+        
+        // Cria o handler com a nova dependência
+        var handler = new WebSocketHandler(context, ws, rabbitMqService);
         await handler.HandleAsync();
     }
     else

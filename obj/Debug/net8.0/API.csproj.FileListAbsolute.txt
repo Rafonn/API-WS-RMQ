@@ -1,4 +1,5 @@
 C:\Users\Rafael\Desktop\API\API\obj\Debug\net8.0\API.csproj.AssemblyReference.cache
+C:\Users\Rafael\Desktop\API\API\obj\Debug\net8.0\rpswa.dswa.cache.json
 C:\Users\Rafael\Desktop\API\API\obj\Debug\net8.0\API.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\Rafael\Desktop\API\API\obj\Debug\net8.0\API.AssemblyInfoInputs.cache
 C:\Users\Rafael\Desktop\API\API\obj\Debug\net8.0\API.AssemblyInfo.cs
@@ -14,6 +15,8 @@ C:\Users\Rafael\Desktop\API\API\bin\Debug\net8.0\API.deps.json
 C:\Users\Rafael\Desktop\API\API\bin\Debug\net8.0\API.runtimeconfig.json
 C:\Users\Rafael\Desktop\API\API\bin\Debug\net8.0\API.dll
 C:\Users\Rafael\Desktop\API\API\bin\Debug\net8.0\API.pdb
+C:\Users\Rafael\Desktop\API\API\bin\Debug\net8.0\Apache.NMS.ActiveMQ.NetCore.dll
+C:\Users\Rafael\Desktop\API\API\bin\Debug\net8.0\Apache.NMS.NetCore.dll
 C:\Users\Rafael\Desktop\API\API\bin\Debug\net8.0\Azure.Core.dll
 C:\Users\Rafael\Desktop\API\API\bin\Debug\net8.0\Azure.Identity.dll
 C:\Users\Rafael\Desktop\API\API\bin\Debug\net8.0\Dapper.dll
@@ -36,6 +39,7 @@ C:\Users\Rafael\Desktop\API\API\bin\Debug\net8.0\Microsoft.IdentityModel.Protoco
 C:\Users\Rafael\Desktop\API\API\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
 C:\Users\Rafael\Desktop\API\API\bin\Debug\net8.0\Microsoft.OpenApi.dll
 C:\Users\Rafael\Desktop\API\API\bin\Debug\net8.0\Microsoft.SqlServer.Server.dll
+C:\Users\Rafael\Desktop\API\API\bin\Debug\net8.0\RabbitMQ.Client.dll
 C:\Users\Rafael\Desktop\API\API\bin\Debug\net8.0\Sprache.dll
 C:\Users\Rafael\Desktop\API\API\bin\Debug\net8.0\Swashbuckle.AspNetCore.Swagger.dll
 C:\Users\Rafael\Desktop\API\API\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
@@ -67,6 +71,9 @@ C:\Users\Rafael\Desktop\API\API\bin\Debug\net8.0\runtimes\win-x64\native\Microso
 C:\Users\Rafael\Desktop\API\API\bin\Debug\net8.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
 C:\Users\Rafael\Desktop\API\API\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Diagnostics.EventLog.dll
 C:\Users\Rafael\Desktop\API\API\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll
+C:\Users\Rafael\Desktop\API\API\obj\Debug\net8.0\rjimswa.dswa.cache.json
+C:\Users\Rafael\Desktop\API\API\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
+C:\Users\Rafael\Desktop\API\API\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
 C:\Users\Rafael\Desktop\API\API\obj\Debug\net8.0\scopedcss\bundle\API.styles.css
 C:\Users\Rafael\Desktop\API\API\obj\Debug\net8.0\staticwebassets.build.json
 C:\Users\Rafael\Desktop\API\API\obj\Debug\net8.0\staticwebassets.build.json.cache
