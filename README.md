@@ -21,7 +21,7 @@ This project is a .NET API designed for real-time question and answer interactio
 1. **Clone the repository:**
    ```sh
    git clone https://github.com/yourusername/your-repo.git
-   cd your-repo
+   cd API-WS-RMQ
    ```
 
 2. **Configure RabbitMQ:**
